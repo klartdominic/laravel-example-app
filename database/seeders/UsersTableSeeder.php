@@ -32,7 +32,7 @@ class UsersTableSeeder extends Seeder
         // create the system admin
         User::create([
             'name' => 'Sprobe',
-            'email' => 'admin@tcg.sprobe.ph',
+            'email' => 'test@user.com',
             'password' => Hash::make('Password2020!'),
             'remember_token' => 'none',
             'email_verified_at' => Carbon::now(),
