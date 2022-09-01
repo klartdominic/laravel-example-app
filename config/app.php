@@ -29,6 +29,10 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'client_id' => env('API_CLIENT_ID', ''),
+    'client_secret' => env('API_CLIENT_SECRET', ''),
+    'api_version' => env('API_VERSION', 'v1'),
+    'api_url' => env('API_URL', ''),
 
     /*
     |--------------------------------------------------------------------------
