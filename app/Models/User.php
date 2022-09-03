@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status_id'
     ];
 
     /**
@@ -41,4 +42,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Retrieves all activation tokens of the user
+     *
+     * @return App\Models\ActivationToken[]
+     */
+    public function activationTokens()
+    {
+        return $this->hasMany(ActivationToken::class);
+    }
 }

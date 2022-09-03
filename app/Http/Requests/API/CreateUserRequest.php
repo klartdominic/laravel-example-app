@@ -17,8 +17,10 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email_address' => ['required', new EmailAddress, 'unique:users,email_address'],
-            'password' => ['required', new Password]
+            // 'email_address' => ['required', new EmailAddress, 'unique:users,email_address'],
+            // 'password' => ['required', new Password]
+            'email_address' => 'required',
+            'password' => 'required',
         ];
     }
 
@@ -32,7 +34,7 @@ class CreateUserRequest extends FormRequest
         return $this->input('email_address', null);
     }
 
-    public function getPassword2()
+    public function getInputPassword()
     {
         return $this->input('password', null);
     }

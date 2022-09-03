@@ -3,7 +3,10 @@
 namespace App\Services\API;
 
 use DB;
+use Hash;
 use App\Models\User;
+use App\Models\UserStatus;
+use App\Models\ActivationToken;
 use App\Exceptions\UserStatusNotFoundException;
 
 class UserService
@@ -17,10 +20,9 @@ class UserService
   /**
    * UserService Constructor
    */
-  public function __contruct(
-    User $user,
-  ) {
-    $this->user = $user;
+  public function __construct(User $user)
+  {
+      $this->user = $user;
   }
 
   /**
@@ -42,16 +44,18 @@ class UserService
         throw new UserStatusNotFoundException;
       } 
 
-      $params['user_status_id'] = $status->id;
-      // $user = $this->user->create($params);
+      $params['status_id'] = $status->id;
+      // dd($params);
+      
+      $user = $this->user->create($params);
 
       if (!($user instanceof User)) {
           throw new UserNotCreatedException;
       }
+      
+      $token = Hash::make(time() . uniqid());
 
       $user->activationTokens()->save(new ActivationToken(['token' => $token]));
-
-      $token = Hash::make(time() . uniqid());
       
       DB::commit();
     } catch (Exception $e) {

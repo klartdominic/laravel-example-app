@@ -6,6 +6,7 @@ use App\Services\API\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\API\CreateUserRequest;
+use App\Http\Requests\API\RegistrationRequest;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
@@ -34,17 +35,22 @@ class UserController extends Controller
         return User::all();
     }
 
-    public function create(CreateUserRequest $request) 
+    public function create(RegistrationRequest $request) 
     {   
-        $request->validated();
 
         try {
-            $formData = [
-                'name' => $request->getName(),
-                'email_address' => $request->getEmailAddress(),
-                'password' => $request->getPassword()
-            ];
-            $user = $this->userService->create($formData);
+            // $formData = [
+            //     'name' => $request->getName(),
+            //     'email_address' => $request->getEmailAddress(),
+            //     'password' => $request->getInputPassword()
+            // ];
+            // $formData = $request->validate([
+            //     'name' => 'required|max:255',
+            //     'email_address' => 'required',
+            //     'password' => 'required',
+            // ]);
+            $formData = $request->validated();
+            $user = $this->userService->createUser($formData);
             $this->response['data'] = new UserResource($user);
         } catch (Exception $e) { // @codeCoverageIgnoreStart
             $this->response = [
