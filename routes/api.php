@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\PasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,3 +24,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('users', [UserController::class, 'index']);
 Route::post('register', [UserController::class, 'create']);
+
+Route::post('password/reset', [PasswordController::class, 'forgotPassword']);
