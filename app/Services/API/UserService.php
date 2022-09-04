@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserStatus;
 use App\Models\ActivationToken;
 use App\Exceptions\UserStatusNotFoundException;
+use App\Exceptions\UserNotFoundException;
 
 class UserService
 {
@@ -67,4 +68,45 @@ class UserService
     return $user;
         
   }
+
+  /**
+   * Handle finding the User by email
+   * 
+   * @param string $email
+   * @return User $user
+   */
+  public function findByEmail($email)
+  {
+    //retrieve user
+    $user = $this->user
+            ->where('email', $email)
+            ->first();
+
+    // check if user exists
+    if (!($user instanceof User))
+    {
+      throw new UserNotFoundException;
+    }
+
+    return $user;
+    
+  }
+
+  /**
+     * Retrieves a user by id
+     *
+     * @param int $id
+     * @return User $user
+     */
+    public function findById(int $id)
+    {
+        // retrieve the user
+        $user = $this->user->find($id);
+
+        if (!($user instanceof User)) {
+            throw new UserNotFoundException;
+        }
+
+        return $user;
+    }
 }
