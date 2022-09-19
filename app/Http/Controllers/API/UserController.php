@@ -39,25 +39,15 @@ class UserController extends Controller
     {   
 
         try {
-            // $formData = [
-            //     'name' => $request->getName(),
-            //     'email_address' => $request->getEmailAddress(),
-            //     'password' => $request->getInputPassword()
-            // ];
-            // $formData = $request->validate([
-            //     'name' => 'required|max:255',
-            //     'email_address' => 'required',
-            //     'password' => 'required',
-            // ]);
             $formData = $request->validated();
             $user = $this->userService->createUser($formData);
             $this->response['data'] = new UserResource($user);
-        } catch (Exception $e) { // @codeCoverageIgnoreStart
+        } catch (Exception $e) {
             $this->response = [
                 'error' => $e->getMessage(),
                 'code' => 500,
             ];
-        } // @codeCoverageIgnoreEnd
+        } 
 
         return response()->json($this->response, $this->response['code']);
     } 

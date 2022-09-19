@@ -4,12 +4,15 @@ namespace App\Services\API;
 
 use DB;
 use Hash;
+use Mail;
 use App\Models\User;
 use App\Models\UserStatus;
 use App\Models\ActivationToken;
+use App\Models\PasswordReset;
 use App\Exceptions\UserStatusNotFoundException;
 use InvalidArgumentException;
 use App\Services\API\UserService;
+use App\Mail\ForgotPasswordMail;
 
 class PasswordService
 {
@@ -25,12 +28,22 @@ class PasswordService
   protected $userService;
 
   /**
+   * @var App\Models\passwordReset $passwordReset
+   */
+  protected $passwordReset;
+
+  /**
    * PasswordService Constructor
    */
-  public function __construct(User $user, UserService $userService)
+  public function __construct(
+    User $user, 
+    UserService $userService, 
+    PasswordReset $passwordReset
+  )
   {
       $this->user = $user;
       $this->userService = $userService;
+      $this->passwordReset = $passwordReset;
   }
 
   /**

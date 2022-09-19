@@ -9,6 +9,7 @@ use App\Models\UserStatus;
 use App\Models\ActivationToken;
 use App\Exceptions\UserStatusNotFoundException;
 use App\Exceptions\UserNotFoundException;
+use App\Exceptions\UserNotCreatedException;
 
 class UserService
 {
@@ -46,10 +47,9 @@ class UserService
       } 
 
       $params['status_id'] = $status->id;
-      // dd($params);
       
       $user = $this->user->create($params);
-
+      
       if (!($user instanceof User)) {
           throw new UserNotCreatedException;
       }
@@ -104,9 +104,9 @@ class UserService
         $user = $this->user->find($id);
 
         if (!($user instanceof User)) {
-            throw new UserNotFoundException;
+          throw new UserNotFoundException;  
         }
 
         return $user;
     }
-}
+}    

@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Services\API\PasswordService;
-
 use Illuminate\Http\Request;
+
+use App\Services\API\PasswordService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\API\ForgotPasswordRequest;
+
 
 class PasswordController extends Controller
 {
