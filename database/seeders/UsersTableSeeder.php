@@ -31,9 +31,12 @@ class UsersTableSeeder extends Seeder
 
         // create the system admin
         User::create([
+            'id' => 1,
             'name' => 'Sprobe',
             'email' => 'test@user.com',
             'password' => Hash::make('Password2020!'),
+            'last_login' => Carbon::now(),
+            'status_id' => $status->id,
             'remember_token' => 'none',
             'email_verified_at' => Carbon::now(),
             'created_at' => Carbon::now(),
