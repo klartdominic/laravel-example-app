@@ -35,7 +35,7 @@ class ResetPasswordRequest extends FormRequest
         return $this->input('token', null);
     }
 
-    public function getPassword()
+    public function getPassword2()
     {
         return $this->input('password', null);
     }

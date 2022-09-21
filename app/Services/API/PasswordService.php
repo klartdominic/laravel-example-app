@@ -13,6 +13,8 @@ use App\Exceptions\UserStatusNotFoundException;
 use InvalidArgumentException;
 use App\Services\API\UserService;
 use App\Mail\ForgotPasswordMail;
+use App\Mail\PasswordChange;
+use App\Exceptions\InvalidPasswordResetTokenException;
 
 class PasswordService
 {
@@ -75,4 +77,55 @@ class PasswordService
 
     return $token;
   }
+
+  /**
+     * Handles the Reset Password request of the User
+     *
+     * @param array $data
+     * @return PasswordReset
+     */
+    public function reset(array $data)
+    {
+        if (!array_key_exists('token', $data)) {
+            throw new InvalidArgumentException('Missing required token field.');
+        }
+
+        if (!array_key_exists('password', $data)) {
+            throw new InvalidArgumentException('Missing required password field.');
+        }
+
+        // validate if token is valid
+        $token = $this->passwordReset
+                    ->where('token', $data['token'])
+                    ->first();
+                    
+        if (!($token instanceof PasswordReset)) {
+            throw new InvalidPasswordResetTokenException;
+        }
+
+        // get active user status
+        $status = UserStatus::where('name', config('user.statuses.active'))->first();
+
+        if (!($status instanceof UserStatus)) {
+            throw new RuntimeException('Unable to retrieve user status');
+        }
+
+        // retrieve user to fetch new password
+        $user = $this->userService->findByEmail($token->email);
+
+        // update user password
+        $user->update([
+            'password' => Hash::make($data['password']),
+            'login_attempts' => 0, // reset failed attempts
+        ]);
+
+        // revoke the token
+        $token->delete();
+
+        // send successful password reset email notification to user
+        Mail::to($user)->send(new PasswordChange($user));
+
+        // return user
+        return $user;
+    }
 }
