@@ -39,6 +39,8 @@ class UserService
     
     try
     {
+
+      $params['password'] = Hash::make($params['password']);
       $status = UserStatus::where('name', config('user.statuses.pending'))
                             ->first();
 
