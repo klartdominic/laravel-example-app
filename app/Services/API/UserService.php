@@ -95,19 +95,51 @@ class UserService
   }
 
   /**
-     * Retrieves a user by id
-     *
-     * @param int $id
-     * @return User $user
-     */
-    public function findById(int $id)
-    {
-        // retrieve the user
-        $user = $this->user->find($id);
+   * Retrieves a user by id
+   *
+   * @param int $id
+   * @return User $user
+   */
+  public function findById(int $id)
+  {
+      // retrieve the user
+      $user = $this->user->find($id);
 
-        if (!($user instanceof User)) {
-          throw new UserNotFoundException;  
+      if (!($user instanceof User)) {
+        throw new UserNotFoundException;  
+      }
+
+      return $user;
+  }
+
+
+    /**
+     * Updates user in the database
+     *
+     * @param array $params
+     * @return App\Models\User $user
+     */
+    public function update(array $params)
+    {
+        // retrieve user information
+        $user = $this->findById($params['id']);
+
+        if (array_key_exists('password', $params)) {
+            // update user password if provided in request or retain the current password
+            $params['password'] = strlen($params['password']) > 0 ?
+                Hash::make($params['password']) :
+                $user->password;
         }
+
+        // upload avatar if present
+        if (array_key_exists('avatar', $params)) {
+            $params['avatar'] = ($params['avatar'] instanceof UploadedFile) ?
+                config('app.storage_disk_url') . '/' . $this->uploadOne($params['avatar'], 'avatars') :
+                $user->avatar;
+        }
+
+        // perform update
+        $user->update($params);
 
         return $user;
     }

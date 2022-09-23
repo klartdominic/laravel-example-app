@@ -26,3 +26,4 @@ Route::get('users', [UserController::class, 'index']);
 Route::post('register', [UserController::class, 'create']);
 Route::post('password/forgot', [PasswordController::class, 'forgot']);
 Route::post('password/reset', [PasswordController::class, 'reset']);
+Route::post('user/edit', [UserController::class, 'update']); 

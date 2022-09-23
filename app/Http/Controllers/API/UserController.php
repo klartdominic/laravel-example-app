@@ -51,4 +51,35 @@ class UserController extends Controller
 
         return response()->json($this->response, $this->response['code']);
     } 
+
+    /**
+     * Updates user information
+     *
+     * @param App\Http\Requests\CreateUserRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateUserRequest $request)
+    {
+        $request->validated();
+
+        try {
+            $formData = [
+                'id' => $request->getId(),
+                'name' => $request->getName(),
+                'email_address' => $request->getEmailAddress(),
+                'password' => $request->getPassword(),
+            ];
+
+            $user = $this->userService->update($formData);
+            $this->response['data'] = new UserResource($user);
+        } catch (Exception $e) { // @codeCoverageIgnoreStart
+            $this->response = [
+                'error' => $e->getMessage(),
+                'code' => 500,
+            ];
+        } // @codeCoverageIgnoreEnd
+
+        return response()->json($this->response, $this->response['code']);
+    }
+
 }
