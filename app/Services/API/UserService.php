@@ -7,6 +7,7 @@ use Hash;
 use App\Models\User;
 use App\Models\UserStatus;
 use App\Models\ActivationToken;
+use App\Models\UserProfile;
 use App\Exceptions\UserStatusNotFoundException;
 use App\Exceptions\UserNotFoundException;
 use App\Exceptions\UserNotCreatedException;
@@ -20,11 +21,21 @@ class UserService
   protected $user;
 
   /**
+   * @var App\Models\UserProfile
+   * 
+   */
+  protected $userProfile;
+
+  /**
    * UserService Constructor
    */
-  public function __construct(User $user)
+  public function __construct(
+    User $user,
+    UserProfile $userProfile,
+  )
   {
       $this->user = $user;
+      $this->userProfile = $userProfile;
   }
 
   /**
@@ -121,7 +132,15 @@ class UserService
   public function findProfileById(int $id){
     $user = $this->user->find($id);
 
-    $userPRofile = UserProfile::
+    if (!($user instanceof User)) {
+      throw new UserNotFoundException;
+    }
+
+    $userPRofile = $this->userProfile
+                    ->where('user_id', $user->id)
+                    ->first();
+                    
+    return $userPRofile;
   }
 
   /**
@@ -137,8 +156,8 @@ class UserService
       
       // retrieve user information
       $user = $this->findById($params['id']);
-      $userProfile = $this->findProfileById($params['id']);
-      
+      $profile = $this->findProfileById($params['id']);
+    
       if (array_key_exists('password', $params)) {
         // update user password if provided in request or retain the current password
         $params['password'] = strlen($params['password']) > 0 ?
@@ -146,9 +165,15 @@ class UserService
         $user->password;
       }
       
-      // perform update
+      // perform update)
       $user->update($params);
-      $userProfile->update($params);
+      // $update = $userProfile->update($params);
+      if(!$profile){
+        $params['user_id'] = $user->id;
+        $profile = $this->userProfile->create($params);
+      } else {
+        $profile->update($params);
+      }
       DB::commit();
       
     } catch (Exception $e) {
@@ -156,8 +181,9 @@ class UserService
       throw $e;
       
     } 
+    // dd($profile);
     
-    return $userProfile; 
+    return $user; 
   }
 
     

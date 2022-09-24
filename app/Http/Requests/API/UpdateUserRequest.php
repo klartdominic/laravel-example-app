@@ -57,4 +57,9 @@ class UpdateUserRequest extends FormRequest
     {
         return $this->input('phone_number', null);
     }
+
+    public function getBirthday()
+    {
+        return $this->input('birthday', null);
+    }
 }

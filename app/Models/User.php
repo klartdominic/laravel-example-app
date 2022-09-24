@@ -52,4 +52,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivationToken::class);
     }
+
+    /**
+     * Get the user that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user_profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
 }

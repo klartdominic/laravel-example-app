@@ -9,7 +9,9 @@ use App\Http\Requests\API\CreateUserRequest;
 use App\Http\Requests\API\RegistrationRequest;
 use App\Http\Requests\API\UpdateUserRequest;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserProfileResource;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -70,6 +72,7 @@ class UserController extends Controller
                 'email_address' => $request->getEmailAddress(),
                 'address' => $request->getAddress(),
                 'phone_number' => $request->getPhoneNumber(),
+                'birthday' => $request->getBirthday(),
             ];
             // $formData = $request->validated();
             
