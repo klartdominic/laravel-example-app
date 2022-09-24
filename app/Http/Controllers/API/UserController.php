@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\API\CreateUserRequest;
 use App\Http\Requests\API\RegistrationRequest;
+use App\Http\Requests\API\UpdateUserRequest;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
@@ -64,12 +65,14 @@ class UserController extends Controller
 
         try {
             $formData = [
-                'id' => $request->getId(),
+                'id' => $request->getUserId(),
                 'name' => $request->getName(),
                 'email_address' => $request->getEmailAddress(),
-                'password' => $request->getPassword(),
+                'address' => $request->getAddress(),
+                'phone_number' => $request->getPhoneNumber(),
             ];
-
+            // $formData = $request->validated();
+            
             $user = $this->userService->update($formData);
             $this->response['data'] = new UserResource($user);
         } catch (Exception $e) { // @codeCoverageIgnoreStart

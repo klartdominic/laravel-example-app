@@ -112,35 +112,53 @@ class UserService
       return $user;
   }
 
+  /**
+   * Retrieves a profile from user by id
+   * 
+   * @param int $id
+   * @return UserProfile $userProfile
+   */
+  public function findProfileById(int $id){
+    $user = $this->user->find($id);
 
-    /**
-     * Updates user in the database
-     *
-     * @param array $params
-     * @return App\Models\User $user
-     */
-    public function update(array $params)
-    {
-        // retrieve user information
-        $user = $this->findById($params['id']);
+    $userPRofile = UserProfile::
+  }
 
-        if (array_key_exists('password', $params)) {
-            // update user password if provided in request or retain the current password
-            $params['password'] = strlen($params['password']) > 0 ?
-                Hash::make($params['password']) :
-                $user->password;
-        }
+  /**
+   * Updates user in the database
+   *
+   * @param array $params
+   * @return App\Models\User $user
+   */
+  public function update(array $params)
+  {
+    DB::beginTransaction();
+    try {
+      
+      // retrieve user information
+      $user = $this->findById($params['id']);
+      $userProfile = $this->findProfileById($params['id']);
+      
+      if (array_key_exists('password', $params)) {
+        // update user password if provided in request or retain the current password
+        $params['password'] = strlen($params['password']) > 0 ?
+        Hash::make($params['password']) :
+        $user->password;
+      }
+      
+      // perform update
+      $user->update($params);
+      $userProfile->update($params);
+      DB::commit();
+      
+    } catch (Exception $e) {
+      DB::rollback();
+      throw $e;
+      
+    } 
+    
+    return $userProfile; 
+  }
 
-        // upload avatar if present
-        if (array_key_exists('avatar', $params)) {
-            $params['avatar'] = ($params['avatar'] instanceof UploadedFile) ?
-                config('app.storage_disk_url') . '/' . $this->uploadOne($params['avatar'], 'avatars') :
-                $user->avatar;
-        }
-
-        // perform update
-        $user->update($params);
-
-        return $user;
-    }
+    
 }    
