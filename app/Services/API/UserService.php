@@ -186,5 +186,55 @@ class UserService
     return $user; 
   }
 
-    
+  /**
+     * Updates user login attempt in the database - failed
+     *
+     * @param $email
+     * @return $result
+     */
+    public function loginAttempt($email)
+    {
+        $user = User::where('email', $email)->first();
+        $result = [
+            'status' => 401,
+            'error' => 'Email and Password mismatch.'
+        ];
+        if ($user) {
+            if ($user->user_status_id == 1) {
+                $login_attempts = $user->login_attempts;
+
+                if ($login_attempts < 5) {
+                    $login_attempts += 1;
+                    $user->update([
+                        'login_attempts' => $login_attempts,
+                    ]);
+                } else {
+                    $user->update([
+                        'user_status_id' => 6,
+                    ]);
+                    $result = [
+                        'status' => 401,
+                        'error' => 'The account is now locked. Please wait for 10 mins or reset your password in the forgot password section.'
+                    ];
+                }
+            } else if ($user->user_status_id === 2) {
+                $result = [
+                    'status' => 401,
+                    'error' => 'User is disabled.'
+                ];
+            } else if ($user->user_status_id === 5) {
+                $result = [
+                    'status' => 401,
+                    'error' => 'User is still pending for approval.'
+                ];
+            } else {
+                $result = [
+                    'status' => 401,
+                    'error' => 'User is invalid.'
+                ];
+            }
+        }
+
+        return $result;
+    }
 }    
