@@ -47,48 +47,7 @@ class LoginController extends Controller
         $this->userService = $userService;
         $this->middleware('guest')->except('logout');
     }
-
-    // public function authenticate(Request $request){
-
-    //     $credentials = $request->only('email','password');
-    //     $result = ['status'=>200];
-
-    //     if(Auth::attempt(['email'=> $credentials['email'], 'password'=> $credentials['password'], 'status_id'=> 1])){
-    //         $user = $request->user();
-    //         $tokenResult = $user->createToken('Personal Access Token');
-    //         $token = $tokenResult->token;
-    //         $token->save();
-    //         $result['token_type'] = 'Bearer';
-    //         $result['expires_in'] = $tokenResult->token->expires_at;
-    //         $result['access_token'] = $tokenResult->accessToken;
-    //         $this->userService->successfulLogin($request->get('email'));
-    //     }
-    //     else if(Auth::attempt(['email'=> $credentials['email'], 'password'=> $credentials['password'], 'status_id'=> 6])){
-    //         $user = $request->user();
-    //         $dtNow = Carbon::parse($user->updated_at);
-    //         $dtToCompare = Carbon::now();
-    //         $diff = $dtNow->diffInSeconds($dtToCompare);
-    //         if($diff > 600){
-    //             $tokenResult = $user->createToken('Personal Access Token');
-    //             $token = $tokenResult->token;
-    //             $token->save();
-    //             $result['token_type'] = 'Bearer';
-    //             $result['expires_in'] = $tokenResult->token->expires_at;
-    //             $result['access_token'] = $tokenResult->accessToken;
-    //             $this->userService->successfulLogin($request->get('email'));
-    //         }
-    //         else{
-    //             $result = [
-    //                 'status' => 401,
-    //                 'error' => 'The account is now locked. Please wait for 10 mins or reset your password in the forgot password section.'
-    //             ];
-    //         }   
-    //     }
-    //     else{
-    //         $result = $this->userService->loginAttempt($request->get('email'));
-    //     }
-    //     return response()->json($result, $result['status']);
-    // }
+    
     public function authenticate(Request $request){
         $credentials = $request->only('email','password');
         $result = ['status'=>200];
@@ -105,6 +64,5 @@ class LoginController extends Controller
         }
 
         return response()->json($result, $result['status']);
-        // return $this->sendResponse($result, 'User login successfully');
     }
 }
