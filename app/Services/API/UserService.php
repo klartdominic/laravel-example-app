@@ -237,4 +237,19 @@ class UserService
 
         return $result;
     }
+
+    /**
+     * Updates user login attempt in the database - successful
+     *
+     * @param $email
+     * @return App\Models\User $user
+     */
+    public function successfulLogin($email)
+    {
+        $user = User::where('email', $email)->whereIn('status_id', [1, 6])->first();
+        $user->update([
+            'status_id' => 1,
+            'login_attempts' => 0,
+        ]);
+    }
 }    

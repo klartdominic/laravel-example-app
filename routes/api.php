@@ -19,9 +19,9 @@ use App\Http\Controllers\Auth\LoginController;
 // Default API Homepage
 Route::get('/', [HomeController::class, '__invoke']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('login', [LoginController::class, 'authenticate']);
 
