@@ -53,7 +53,7 @@ class LoginController extends Controller
         $result = ['status'=>200];
         
         if(Auth::attempt(['email'=> $credentials['email'], 'password'=> $credentials['password'], 'status_id'=> 1])){
-             $user = $request->user();
+            $user = $request->user();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
@@ -61,7 +61,9 @@ class LoginController extends Controller
             $result['expires_in'] = $tokenResult->token->expires_at;
             $result['access_token'] = $tokenResult->accessToken;
             $this->userService->successfulLogin($request->get('email'));
-        }
+        }else{
+            $result = $this->userService->loginAttempt($request->get('email'));
+        }   
 
         return response()->json($result, $result['status']);
     }
